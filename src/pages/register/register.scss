@@ -1,0 +1,87 @@
+@import "@/styles/variables.scss";
+@import "@/styles/responsive.scss";
+
+
+
+.register {
+    width: 100vw;
+    height: 100vh;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Inter", sans-serif;
+}
+
+.containerRegister {
+    width:40vw;
+    gap: 30px;
+    background-color: $main-color;
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.titleHeader {
+    text-align: left;
+}
+
+.titleRegister {
+    font-size: 38px;
+    color: $main-bg;
+}
+
+.rowContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.fullName {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+
+    .name {
+        flex: 1;
+
+
+    }
+}
+
+input {
+    margin-top: 4px;
+}
+
+label {
+    margin-bottom: 10px;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid $main-bg;
+    border-radius: 5px;
+    margin-bottom: 6px;
+}
+
+button {
+    background-color: $main-bg;
+    color: $main-color;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+        background-color: darken($main-bg, 10%); // Darken the background on hover
+    }
+}
+.text-input{
+    gap: 10px;
+    margin: 10px 0 ;
+}
