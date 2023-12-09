@@ -100,7 +100,7 @@ const Home = () => {
           total={
             storedRolesString == "SHOP"
               ? Number(splitTotalString(totalUserToShow.toString())[3])
-              : totalProductFromStorage ?? 0
+              : totalProductFromStorage ?? totalProducts??0
           }
         />
       </div>

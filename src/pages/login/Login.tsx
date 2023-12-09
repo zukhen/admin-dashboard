@@ -20,8 +20,8 @@ import { handleLoginAdmin, handleLoginShop } from "@/api/auth";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
 
-const uri =
-  "https://media.discordapp.net/attachments/1135973606862635140/1171797296783048714/phone.png?ex=656736c6&is=6554c1c6&hm=60690f740d83ab3db964323041059b6c7a9b398916872a5a539bd8dba361884b&=&width=534&height=683";
+// const uri =
+//   "https://media.discordapp.net/attachments/1135973606862635140/1171797296783048714/phone.png?ex=656736c6&is=6554c1c6&hm=60690f740d83ab3db964323041059b6c7a9b398916872a5a539bd8dba361884b&=&width=534&height=683";
 
 const Login = () => {
   const navigate = useNavigate();
