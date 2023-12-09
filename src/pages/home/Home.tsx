@@ -10,7 +10,7 @@ import {
   chartBoxUser,
 } from "@/data";
 import styles from "./home.module.scss";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { handleGetProductCount } from "@/api/product";
 import { handleGetUserCount } from "@/api/user";
 import { splitTotalString } from "@/utils/modifield-string";
@@ -20,13 +20,13 @@ import { handleGetOrderCount } from "@/api/order";
 
 const Home = () => {
   const totalProductFromStorage = localStorage.getItem("totalProduct");
+  const initialDataFetched = localStorage.getItem("initialDataFetched");
+
   const totalUserFromStorage = localStorage.getItem("totalUser");
   const totalUserToShow = totalUserFromStorage
     ? totalUserFromStorage
     : "0T0T0T0T0T0";
   const actionUser = useSelector((state: any) => state.user.isAddNewUser);
-  const [totalUsers, setTotalUsers] = useState<string>();
-  const [totalProducts, setTotalProducts] = useState("0");
   const storedRolesString = sessionStorage.getItem(ADMIN_ROLES);
 
   const handleFetchApi = async () => {
@@ -45,17 +45,12 @@ const Home = () => {
         } = response?.data.data;
         let str = `${totalOrder}T${totalOrderPending}T${totalOrderConfirmed}T${totalOrderShipping}T${totalOrderCanceled}T${totalOderDelivered}`;
         localStorage.setItem("totalUser", str.toString());
-        setTotalUsers(str);
       }
     } else {
       const [productResponse, userResponse] = await Promise.all([
         handleGetProductCount(),
         handleGetUserCount(),
       ]);
-      setTotalProducts(productResponse?.data.totalProduct);
-      setTotalUsers(
-        `${userResponse?.data.data.totalShops}T${userResponse?.data.data.totalUser}`
-      );
       localStorage.setItem(
         "totalProduct",
         productResponse?.data.totalProduct.toString()
@@ -68,7 +63,9 @@ const Home = () => {
   };
 
   useEffect(() => {
-    handleFetchApi();
+    if (!initialDataFetched || actionUser) {
+      handleFetchApi();
+    }
   }, [actionUser]);
 
   return (
@@ -100,7 +97,7 @@ const Home = () => {
           total={
             storedRolesString == "SHOP"
               ? Number(splitTotalString(totalUserToShow.toString())[3])
-              : totalProductFromStorage ?? totalProducts
+              : Number(totalProductFromStorage) 
           }
         />
       </div>
@@ -110,7 +107,7 @@ const Home = () => {
           total={
             storedRolesString == "SHOP"
             ? Number(splitTotalString(totalUserToShow.toString())[3])
-            : totalProductFromStorage ?? totalUsers
+            : Number(totalProductFromStorage) 
           }
         />
       </div>

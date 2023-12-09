@@ -43,7 +43,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
             const delay = (ms: any) =>
               new Promise((resolve) => setTimeout(resolve, ms));
 
-            await delay(1000);
+            await delay(1300);
             window.location.reload();
             setOpen(false);
           }

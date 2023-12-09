@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import styles from "./products.module.scss";
 import {  handleQueryProduct } from "@/api/product";
 import { Modal, Pagination } from "@mui/material";
-import { modifiedString } from "@/utils/modifield-string";
 import { calculateTotalPages } from "@/utils/pagination-utils";
 import { columns, formColumns } from "./form";
 import DataTable from "@/components/dataTable/DataTable";
@@ -14,6 +13,8 @@ import {
   actionSetTotalUsers,
 } from "@/redux/action/user-action";
 import { useDispatch, useSelector } from "react-redux";
+import { convertToVietnamTime } from "@/utils/date-utils";
+import { convertVNDCurrencyformatting } from "@/utils/modifield-string";
 
 const Products = () => {
   const [open, setOpen] = useState(false);
@@ -33,8 +34,8 @@ const Products = () => {
         (item: any, index: number) => ({
           ...item,
           id: index + 1,
-          product_price: `$${item.product_price}`,
-          createdAt: `${modifiedString(item)}`,
+          product_price: `${convertVNDCurrencyformatting(item.product_price)} `,
+          createdAt: convertToVietnamTime(item.createdAt),
         })
       );
       setListProduct(modifiedData);

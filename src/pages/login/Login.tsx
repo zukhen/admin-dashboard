@@ -19,9 +19,10 @@ import { handleGetUserInformation } from "@/api/shop";
 import { handleLoginAdmin, handleLoginShop } from "@/api/auth";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
+import { handleGetProductCount } from "@/api/product";
+import { handleGetUserCount } from "@/api/user";
+import { handleGetOrderCount } from "@/api/order";
 
-const uri =
-  "https://media.discordapp.net/attachments/1135973606862635140/1171797296783048714/phone.png?ex=656736c6&is=6554c1c6&hm=60690f740d83ab3db964323041059b6c7a9b398916872a5a539bd8dba361884b&=&width=534&height=683";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -46,6 +47,19 @@ const Login = () => {
 
   const handleAdminLogin = async (responseAdmin: any) => {
     updateLocalStorage(responseAdmin.data.data);
+    const [productResponse, userResponse] = await Promise.all([
+      handleGetProductCount(),
+      handleGetUserCount(),
+    ]);
+    localStorage.setItem(
+      "totalProduct",
+      productResponse?.data.totalProduct.toString()
+    );
+    localStorage.setItem(
+      "totalUser",
+      `${userResponse?.data.data.totalShops}T${userResponse?.data.data.totalUser}`
+    );
+    localStorage.setItem("initialDataFetched", "true");
     navigateToHome();
   };
 
@@ -57,7 +71,7 @@ const Login = () => {
       const roles = response.data.data.roles[0];
 
       if (roles == "SHOP") {
-        updateLocalStorage(responseShop.data.data);
+         updateLocalStorage(responseShop.data.data);
         navigateToHome();
       } else {
         handleInvalidRole();
@@ -68,20 +82,37 @@ const Login = () => {
   const updateLocalStorage = (data: any) => {
     const accessToken = data.tokens.accessToken;
     const refreshToken = data.tokens.refreshToken;
-
     const modifiedAccessToken = encryptData(`${accessToken}`);
     const modifiedRefreshToken = encryptData(`${refreshToken}`);
     const modifiedData = encryptData(JSON.stringify(data.admin || data.shop));
-
+  
     LocalStorageService.setTokenA(ADMIN_TOKENA, modifiedAccessToken);
     LocalStorageService.setTokenR(ADMIN_TOKENR, modifiedRefreshToken);
     LocalStorageService.setUserData(ADMIN_DATA, modifiedData);
     sessionStorage.setItem(ADMIN_ROLES, data.admin ? "ADMIN" : "SHOP");
-
+  
     if (data.shop) {
-      LocalStorageService.setUUID(ADMIN_UUID, data.shop._id);
+      const shopId = data.shop._id;
+  
+      LocalStorageService.setUUID(ADMIN_UUID, shopId);
+  
+      handleGetOrderCount(shopId).then(response => {
+        const {
+          totalOrder,
+          totalOrderPending,
+          totalOrderConfirmed,
+          totalOrderShipping,
+          totalOrderCanceled,
+          totalOderDelivered,
+        } = response?.data.data;
+  
+        const str = `${totalOrder}T${totalOrderPending}T${totalOrderConfirmed}T${totalOrderShipping}T${totalOrderCanceled}T${totalOderDelivered}`;
+        localStorage.setItem("totalUser", str);
+        localStorage.setItem("initialDataFetched", "true");
+      });
     }
   };
+  
 
   const navigateToHome = () => {
     navigate("/home", { replace: true });
@@ -106,8 +137,8 @@ const Login = () => {
       setErrorPassword(true);
     } else {
       try {
-    setSubmitButtonDisabled(true);
-    const [responseAdmin, responseShop] = await axios.all([
+        setSubmitButtonDisabled(true);
+        const [responseAdmin, responseShop] = await axios.all([
           handleLoginAdmin(username, password),
           handleLoginShop(username, password),
         ]);
@@ -121,7 +152,6 @@ const Login = () => {
           toast.error("Incorrect username or password!");
         }
       } catch (error) {
-        //log ra lỗi khác ở đây
         console.log("Error:", error);
       } finally {
         setSubmitButtonDisabled(false);
@@ -170,21 +200,23 @@ const Login = () => {
                 )}
               </div>
               <div className={styles.buttonContainer}>
-              {submitButtonDisabled? 
-            <CircularProgress color="primary" size={30} />:
-                <button
-                  className={styles.loginButton}
-                  disabled={submitButtonDisabled}
-                  onClick={handleSubmit}
-                >
-                  Log in
-                </button>}
+                {submitButtonDisabled ? (
+                  <CircularProgress color="primary" size={30} />
+                ) : (
+                  <button
+                    className={styles.loginButton}
+                    disabled={submitButtonDisabled}
+                    onClick={handleSubmit}
+                  >
+                    Log in
+                  </button>
+                )}
                 {/*<button className="register-button" onClick={handleRedirect} >Register</button>*/}
               </div>
             </div>
           </div>
 
-          <img src={uri} alt="image" className={styles.image} />
+          <img src={"/phone.png"} alt="image" className={styles.image} />
         </div>
 
         {showModal && (

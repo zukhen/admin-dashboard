@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import styles from "./category.module.scss";
 import DataTable from "@/components/dataTable/DataTable";
 import {  Pagination } from "@mui/material";
-import { modifiedString } from "@/utils/modifield-string";
 import { categoryColumns } from "./model-category";
 import AddCategory from "./components/add";
 import {  handleQueryCategory } from "@/api/category";
@@ -12,6 +11,7 @@ import {
   actionSetTotalUsers,
 } from "@/redux/action/user-action";
 import { ToastContainer } from "react-toastify";
+import { convertToVietnamTime } from "@/utils/date-utils";
 
 export default function Categories() {
   const [open, setOpen] = useState(false);
@@ -32,8 +32,8 @@ export default function Categories() {
         (item: any, index: number) => ({
           ...item,
           id: index + 1,
-          createdAt: `${modifiedString(item)}`,
-          updatedAt: `${modifiedString(item)}`,
+          createdAt: convertToVietnamTime(item.createdAt),
+          updatedAt: convertToVietnamTime(item.updatedAt),
         })
       );
 

@@ -8,6 +8,7 @@ import { calculateTotalPages } from "@/utils/pagination-utils";
 import DataTable from "@/components/dataTable/DataTable";
 import Add from "@/components/add/Add";
 import { useSelector } from "react-redux";
+import { convertToVietnamTime } from "@/utils/date-utils";
 // import { useQuery } from "@tanstack/react-query";
 
 const columns: GridColDef[] = [
@@ -70,6 +71,8 @@ const Users = () => {
       const modifiedData = response.data.data.map((item: any, index: number) => ({
         ...item,
         id: index + 1,
+        createdAt: convertToVietnamTime(item.createdAt),
+
       }));
       setListUser(modifiedData);
     }

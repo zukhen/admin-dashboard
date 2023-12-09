@@ -12,6 +12,7 @@ type Props = {
   columns: GridColDef[];
   rows: object[];
   slug: string;
+  isDiscount?: boolean;
   isUserPage?: boolean;
   isOrderPage?: boolean;
   onRowClick: GridEventListener<"rowClick">;
@@ -41,6 +42,7 @@ const DataTable = (props: Props) => {
   return (
     <div className="dataTable">
       <DataGrid
+        style={{ height: props.isDiscount ? "82vh" : "" }}
         className="dataGrid"
         rows={props.rows}
         columns={
@@ -63,8 +65,8 @@ const DataTable = (props: Props) => {
           },
         }}
         onRowClick={props.onRowClick}
-        hideFooter
-        pageSizeOptions={[10]}
+        hideFooter={!props.isDiscount}
+        pageSizeOptions={[10, 15, 20]}
         checkboxSelection={props.isOrderPage}
         disableRowSelectionOnClick
         disableColumnFilter

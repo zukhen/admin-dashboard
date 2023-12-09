@@ -1,7 +1,4 @@
-export const modifiedString = (item: any): string => {
 
-  return convertToVietnamTime(item.createdAt);
-};
 
 export const splitTotalString = (str: string): string[] => str.split("T");
 
@@ -20,11 +17,7 @@ export const modifyFirstCharacterString = (str: string): string => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
-export const convertToVietnamTime = (timestamp:any) => {
-  const utcTime = new Date(timestamp);
-  const vietnamTime = new Date(utcTime.getTime() + 7 * 60 * 60 * 1000);
-  return vietnamTime
-    .toISOString()
-    .replace("T", " | ")
-    .replace(/\.\d{3}Z/, "");
-};
+export const convertVNDCurrencyformatting = (str:any):string=>{
+ return str = str.toLocaleString('it-IT', {style : 'currency', currency : 'VND'});
+
+}

@@ -2,10 +2,10 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import styles from "../orders/orders.module.scss";
 import styles2 from "./products.module.scss";
 import { handleQueryCategory } from "@/api/category";
-import { convertToVietnamTime } from "@/utils/modifield-string";
 import { handleHideProduct, handleUpdateProduct } from "@/api/product";
 import { ToastContainer, toast } from "react-toastify";
-import { convertBase64 } from "@/utils/convert-base64";
+import { convertToVietnamTime } from "@/utils/date-utils";
+import { resizeFile } from "@/utils/convert-base64";
 
 interface ProductDetailsProps {
   selectedRowData: any;
@@ -73,9 +73,8 @@ const ProductDetail: React.FC<ProductDetailsProps> = ({
 
     if (file) {
       try {
-        const fileConvertbase64: string = await convertBase64(file);
-        setImageProduct(fileConvertbase64);
-        // console.log(fileConvertbase64);
+        let result:any= await resizeFile(file);
+        setImageProduct(result);
       } catch (error) {
         console.error("Error converting file to base64:", error);
       }

@@ -1,15 +1,18 @@
-export const convertBase64 = (file: any): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const fileReader = new FileReader();
-      fileReader.readAsDataURL(file);
-  
-      fileReader.onload = () => {
-        const result = fileReader.result as string;
-        resolve(result);
-      };
-  
-      fileReader.onerror = (error) => {
-        reject(error);
-      };
-    });
-  };
+
+import Resizer from "react-image-file-resizer";
+
+export const resizeFile = (file: any) =>
+  new Promise((resolve) => {
+    Resizer.imageFileResizer(
+      file,
+      300,
+      300,
+      "PNG",
+      100,
+      0,
+      (uri) => {
+        resolve(uri);
+      },
+      "base64"
+    );
+  });

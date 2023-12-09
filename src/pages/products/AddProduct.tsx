@@ -17,7 +17,7 @@ import {
   SET_TOTAL_PRODUCT,
   actionSetTotalUsers,
 } from "@/redux/action/user-action";
-import { convertBase64 } from "@/utils/convert-base64";
+import { resizeFile} from "@/utils/convert-base64";
 
 type Props = {
   slug?: string;
@@ -62,8 +62,6 @@ const Add = (props: Props) => {
   const totalUserToShow = totalUserFromStorage ? totalUserFromStorage : "28";
   const [isLoading, setIsLoading] = useState(false);
   const [dataCategory, setDataCategory] = useState<Category[]>([]);
-  // const totalUserFromStorage = localStorage.getItem("totalUser");
-  // const totalUserToShow = totalUserFromStorage ? totalUserFromStorage : "12T8";
   const [formData, setFormData] = useState<FormData>({
     image: "",
     product_type: "Food",
@@ -93,17 +91,15 @@ const Add = (props: Props) => {
   };
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-  
     if (file) {
       try {
-        const fileConvertbase64: string = await convertBase64(file);
+        let result:any= await resizeFile(file);
         setFormData({
           ...formData,
-          image: fileConvertbase64,
+          image: result,
         });
-        // console.log(fileConvertbase64);
-      } catch (error) {
-        console.error('Error converting file to base64:', error);
+      } catch (err) {
+        console.log(err);
       }
     }
   };
@@ -113,6 +109,8 @@ const Add = (props: Props) => {
   };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log(formData.image);
+    
     if (
       !validateProductName(formData.product_name) &&
       !validateProductDescription(formData.product_description) &&
@@ -127,6 +125,7 @@ const Add = (props: Props) => {
         setIsLoading(true);
         const res = await handleAddProduct(formData);
         if (res?.data.status == 201) {
+          //public sản phẩm
           toast.success(res.data.message);
           dispatch(actionSetTotalUsers(SET_TOTAL_PRODUCT, true));
           //xoá cắt chim

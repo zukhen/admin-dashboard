@@ -11,7 +11,7 @@ import {
 } from "@/redux/action/user-action";
 import { CircularProgress } from "@mui/material";
 import { handleAddCategory, handleUpdateCategory } from "@/api/category";
-import { convertBase64 } from "@/utils/convert-base64";
+import { resizeFile } from "@/utils/convert-base64";
 
 type Props = {
   slug: string;
@@ -118,8 +118,8 @@ const AddCategory = (props: Props) => {
   
     if (file) {
       try {
-        const fileConvertbase64: string = await convertBase64(file);
-        setImage(fileConvertbase64);
+        let result:any= await resizeFile(file);
+          setImage(result);
         // console.log(fileConvertbase64);
       } catch (error) {
         console.error('Error converting file to base64:', error);

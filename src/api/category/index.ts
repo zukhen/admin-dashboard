@@ -18,7 +18,6 @@ export const handleQueryCategory = async (
       const headers = {
         Authorization: myHashA,
         RefreshToken: myHashR,
-        "Content-Type": "application/json",
       };
 
       const response = await axiosClient.get(

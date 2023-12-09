@@ -26,6 +26,7 @@ export const handleQueryProduct = async (
     logError(error, "handleQueryProduct");
   }
 };
+
 export const handleAddProduct = async (data: object) => {
   try {
     let tokenA = LocalStorageService.getTokenA(ADMIN_TOKENA);

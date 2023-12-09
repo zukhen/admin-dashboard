@@ -8,7 +8,7 @@ export const PRODUCT = {
   COUNT: "statistical/product/count",
   QUERY: "statistical/product",
   POST: "product",
-  HIDE:"product/draft"
+  HIDE: "product/draft",
 };
 
 export const USERS = {
@@ -35,5 +35,9 @@ export const ORDERS = {
 };
 
 export const CATEGORIES = {
-  QUERY: "category"
-}
+  QUERY: "category",
+};
+
+export const DISCOUNT: { [key: string]: string } = {
+  GET_BY_SHOP: "discount",
+};
