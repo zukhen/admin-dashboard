@@ -2,7 +2,6 @@ import "@/styles/global.scss";
 import styles from "./login.module.scss";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Modal } from "@mui/material";
 import { validatePassword, validateUsername } from "@/utils/auth-utils";
 import Register from "@/pages/register/register";
 import { LocalStorageService } from "@/service/local-storage-service";
@@ -22,6 +21,8 @@ import { ToastContainer, toast } from "react-toastify";
 import { handleGetProductCount } from "@/api/product";
 import { handleGetUserCount } from "@/api/user";
 import { handleGetOrderCount } from "@/api/order";
+import CircularProgress from "@mui/material/CircularProgress";
+import Modal from "@mui/material/Modal";
 
 
 const Login = () => {
