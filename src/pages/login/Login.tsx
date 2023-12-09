@@ -2,7 +2,7 @@ import "@/styles/global.scss";
 import styles from "./login.module.scss";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CircularProgress, Modal } from "@mui/material";
+import { Modal } from "@mui/material";
 import { validatePassword, validateUsername } from "@/utils/auth-utils";
 import Register from "@/pages/register/register";
 import { LocalStorageService } from "@/service/local-storage-service";
