@@ -2,7 +2,7 @@ import "@/styles/global.scss";
 import styles from "./login.module.scss";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CircularProgress, Modal } from "@mui/material";
+import { Modal } from "@mui/material";
 import { validatePassword, validateUsername } from "@/utils/auth-utils";
 import Register from "@/pages/register/register";
 import { LocalStorageService } from "@/service/local-storage-service";
@@ -170,15 +170,16 @@ const Login = () => {
                 )}
               </div>
               <div className={styles.buttonContainer}>
-              {submitButtonDisabled? 
-            <CircularProgress color="primary" size={30} />:
+{/*               {submitButtonDisabled?  */}
+{/*             <CircularProgress color="primary" size={30} />: */}
                 <button
                   className={styles.loginButton}
                   disabled={submitButtonDisabled}
                   onClick={handleSubmit}
                 >
                   Log in
-                </button>}
+                </button>
+{/*               } */}
                 {/*<button className="register-button" onClick={handleRedirect} >Register</button>*/}
               </div>
             </div>
