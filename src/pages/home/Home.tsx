@@ -29,7 +29,7 @@ const Home = () => {
   const actionUser = useSelector((state: any) => state.user.isAddNewUser);
   const newOrder = useSelector((state: any) => state.order.newOrder);
 
-  // const [totalUsers, setTotalUsers] = useState<string>();
+  const [totalUsers, setTotalUsers] = useState<string>();
   const [totalProducts, setTotalProducts] = useState("0");
   const [totalDiscount, setTotalDiscount] = useState("0");
   const storedRolesString = sessionStorage.getItem(ADMIN_ROLES);
@@ -50,7 +50,7 @@ const Home = () => {
         } = response?.data.data;
         let str = `${totalOrder}T${totalOrderPending}T${totalOrderConfirmed}T${totalOrderShipping}T${totalOrderCanceled}T${totalOderDelivered}`;
         localStorage.setItem("totalUser", str.toString());
-        // setTotalUsers(str);
+        setTotalUsers(str);
       }
     } else {
       const [productResponse, userResponse, discountResponse] =
@@ -99,14 +99,14 @@ const Home = () => {
         {/* get from redux */}
         <ChartBox
           {...chartBoxUser}
-          total={Number(splitTotalString(totalUserToShow.toString())[0]||0)}
+          total={Number(splitTotalString(totalUserToShow.toString()??totalUsers)[0])}
         />
       </div>
       <div className={[styles.box, styles.box3].join(" ")}>
         {/* get from redux  enhance user experience */}
         <ChartBox
           {...chartBoxProduct}
-          total={Number(splitTotalString(totalUserToShow.toString())[1]||0)}
+          total={Number(splitTotalString(totalUserToShow.toString()??totalUsers)[1])}
         />
       </div>
       {/* <div className="box box4">
@@ -117,7 +117,7 @@ const Home = () => {
           {...chartBoxConversion}
           total={
             storedRolesString == "SHOP"
-              ? Number(splitTotalString(totalUserToShow.toString())[3]||0)
+              ? Number(splitTotalString(totalUserToShow.toString()??totalUsers)[3])
               : totalProductFromStorage || totalProducts || 0
           }
         />
@@ -127,7 +127,7 @@ const Home = () => {
           {...chartBoxRevenue}
           total={
             storedRolesString == "SHOP"
-              ? Number(splitTotalString(totalUserToShow.toString())[2]||0)
+              ? Number(splitTotalString(totalUserToShow.toString()??totalUsers)[2])
               : totalDiscountFromStorage || totalDiscount || 0
           }
         />
