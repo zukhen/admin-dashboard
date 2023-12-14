@@ -17,16 +17,21 @@ import { splitTotalString } from "@/utils/modifield-string";
 import { useSelector } from "react-redux";
 import { ADMIN_ROLES, ADMIN_UUID } from "@/service/constant";
 import { handleGetOrderCount } from "@/api/order";
+import { handleGetDiscountCount } from "@/api/discount";
 
 const Home = () => {
   const totalProductFromStorage = localStorage.getItem("totalProduct");
+  const totalDiscountFromStorage = localStorage.getItem("totalDiscount");
   const totalUserFromStorage = localStorage.getItem("totalUser");
   const totalUserToShow = totalUserFromStorage
     ? totalUserFromStorage
     : "0T0T0T0T0T0";
   const actionUser = useSelector((state: any) => state.user.isAddNewUser);
-  const [totalUsers, setTotalUsers] = useState<string>();
+  const newOrder = useSelector((state: any) => state.order.newOrder);
+
+  // const [totalUsers, setTotalUsers] = useState<string>();
   const [totalProducts, setTotalProducts] = useState("0");
+  const [totalDiscount, setTotalDiscount] = useState("0");
   const storedRolesString = sessionStorage.getItem(ADMIN_ROLES);
 
   const handleFetchApi = async () => {
@@ -45,17 +50,27 @@ const Home = () => {
         } = response?.data.data;
         let str = `${totalOrder}T${totalOrderPending}T${totalOrderConfirmed}T${totalOrderShipping}T${totalOrderCanceled}T${totalOderDelivered}`;
         localStorage.setItem("totalUser", str.toString());
-        setTotalUsers(str);
+        // setTotalUsers(str);
       }
     } else {
-      const [productResponse, userResponse] = await Promise.all([
-        handleGetProductCount(),
-        handleGetUserCount(),
-      ]);
+      const [productResponse, userResponse, discountResponse] =
+        await Promise.all([
+          handleGetProductCount(),
+          handleGetUserCount(),
+          handleGetDiscountCount(),
+        ]);
       setTotalProducts(productResponse?.data.totalProduct);
-      setTotalUsers(
-        `${userResponse?.data.data.totalShops}T${userResponse?.data.data.totalUser}`
+      setTotalDiscount(discountResponse?.data.data);
+
+      // setTotalDiscount(discountResponse.)
+      // setTotalUsers(
+      //   `${userResponse?.data.data.totalShops}T${userResponse?.data.data.totalUser}`
+      // );
+      localStorage.setItem(
+        "totalDiscount",
+        discountResponse?.data.data.toString()
       );
+
       localStorage.setItem(
         "totalProduct",
         productResponse?.data.totalProduct.toString()
@@ -66,10 +81,13 @@ const Home = () => {
       );
     }
   };
+  useEffect(() => {
+    handleFetchApi();
+  }, []);
 
   useEffect(() => {
     handleFetchApi();
-  }, [actionUser]);
+  }, [actionUser,newOrder]);
 
   return (
     <div className={styles.home}>
@@ -81,14 +99,14 @@ const Home = () => {
         {/* get from redux */}
         <ChartBox
           {...chartBoxUser}
-          total={Number(splitTotalString(totalUserToShow.toString())[0])}
+          total={Number(splitTotalString(totalUserToShow.toString())[0]||0)}
         />
       </div>
       <div className={[styles.box, styles.box3].join(" ")}>
         {/* get from redux  enhance user experience */}
         <ChartBox
           {...chartBoxProduct}
-          total={Number(splitTotalString(totalUserToShow.toString())[1])}
+          total={Number(splitTotalString(totalUserToShow.toString())[1]||0)}
         />
       </div>
       {/* <div className="box box4">
@@ -99,8 +117,8 @@ const Home = () => {
           {...chartBoxConversion}
           total={
             storedRolesString == "SHOP"
-              ? Number(splitTotalString(totalUserToShow.toString())[3])
-              : totalProductFromStorage ?? totalProducts??0
+              ? Number(splitTotalString(totalUserToShow.toString())[3]||0)
+              : totalProductFromStorage || totalProducts || 0
           }
         />
       </div>
@@ -109,8 +127,8 @@ const Home = () => {
           {...chartBoxRevenue}
           total={
             storedRolesString == "SHOP"
-            ? Number(splitTotalString(totalUserToShow.toString())[3])
-            : totalProductFromStorage ?? totalUsers
+              ? Number(splitTotalString(totalUserToShow.toString())[2]||0)
+              : totalDiscountFromStorage || totalDiscount || 0
           }
         />
       </div>

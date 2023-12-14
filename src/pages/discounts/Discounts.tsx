@@ -2,18 +2,22 @@ import { useEffect, useState } from "react";
 import styles from "./discounts.module.scss";
 import { columns, columns2 } from "./Discount-model";
 // import DataTable from "@/components/dataTable/DataTable";
-import Add from "../products/AddProduct";
+import Add from "./AddDiscount";
+// import { handleQueryCategory } from "@/api/category";
 import { handleQueryDiscount } from "@/api/discount";
 import DataTable from "@/components/dataTable/DataTable";
 import { convertToVietnamTime } from "@/utils/date-utils";
+import { CircularProgress } from "@mui/material";
 
 export default function Discounts() {
+  const totalDiscountFromStorage = localStorage.getItem("totalDiscount");
+
   const [open, setOpen] = useState(false);
   const [discounts, setDiscounts] = useState([]);
-  // const [loading, setLoading] = useState(false);
+  const [isLoading, setisLoading] = useState(false)
   const handleFetchApi = async () => {
     try {
-      // setLoading(true);
+      setisLoading(true);
       const response = await handleQueryDiscount();
       if (response?.status === 200) {
         console.log(response.data.data);
@@ -36,36 +40,46 @@ export default function Discounts() {
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
-      // setLoading(false);
+      setisLoading(false);
     }
   };
   useEffect(() => {
     handleFetchApi();
-  }, []);
+  }, [totalDiscountFromStorage]);
   return (
     <div className={styles.users}>
       <div className={styles.info}>
         <h1>Discounts</h1>
         <button onClick={() => setOpen(true)}>Add New Discount</button>
       </div>
-      <DataTable
-        slug="users"
-        columns={columns}
-        rows={discounts}
-        onRowClick={() => {}}
-        isUserPage={true}
-        isDiscount={true}
-      />
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          marginTop: -2,
-          paddingTop: "10px",
-          backgroundColor: "white",
-        }}
-      >
-        {/* <Pagination
+      {isLoading ? (
+        <div className={styles.loadingContainer}>
+          <CircularProgress color="primary" size={50} />
+          <p>Loading...</p>
+        </div>
+      ) : (
+        <>
+          <DataTable
+            slug="users"
+            columns={columns}
+            rows={discounts}
+            onRowClick={() => { }}
+            isUserPage={true}
+            isDiscount={true}
+          />
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginTop: -2,
+              paddingTop: "10px",
+              backgroundColor: "white",
+            }}
+          ></div>
+        </>
+      )}
+      {open && <Add slug="Discount" columns={columns2} setOpen={setOpen} />}
+      {/* <Pagination
                     count={calculateTotalPages(
                         Number(splitTotalString(totalUserToShow.toString())[0])
                     )}
@@ -75,9 +89,8 @@ export default function Discounts() {
                     shape="rounded"
                     color="primary"
                 /> */}
-      </div>
-
-      {open && <Add slug="user" columns={columns2} setOpen={setOpen} />}
     </div>
+
+
   );
 }

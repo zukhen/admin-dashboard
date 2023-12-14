@@ -16,12 +16,13 @@ export const handleGetOrderProduct = async (
     if (tokenA && tokenR) {
       let myHashA = decryptData(tokenA);
       let myHashR = decryptData(tokenR);
-      
-      
+
+      // console.log(myHashA);
+      // console.log(myHashR);
+
       const headers = {
         Authorization: myHashA,
         RefreshToken: myHashR,
-        "Content-Type": "application/json",
       };
 
       const response = await axiosClient.get(
@@ -92,11 +93,76 @@ export const handleShippingOrder = async (orderId: string) => {
   }
 };
 
-export const handleGetOrderCount = async (id?:string) => {
+export const handleGetOrderCount = async (id?: string) => {
   try {
-    const response = await axiosClient.get(`${BASE_URL_API}/${ORDERS.COUNT}/${id}`);
+    const response = await axiosClient.get(
+      `${BASE_URL_API}/${ORDERS.COUNT}/${id}`
+    );
     return response;
   } catch (error: any) {
     logError(error, "handleGetUserCount");
+  }
+};
+// 
+// top order for admin
+export const handleGetTopProduct = async (
+  sort: string = "-totalQuantity",
+  year: number = new Date().getFullYear(),
+  month: number = new Date().getMonth() + 1,
+  limit: number = 5
+) => {
+  try {
+    // ?sort=-totalQuantity&year=2023&month=12&limit=100
+    let tokenA = LocalStorageService.getTokenA(ADMIN_TOKENA);
+    let tokenR = LocalStorageService.getTokenR(ADMIN_TOKENR);
+    if (tokenA && tokenR) {
+      let myHashA = decryptData(tokenA);
+      let myHashR = decryptData(tokenR);
+      // let a = new URLSearchParams
+
+      const headers = {
+        Authorization: myHashA,
+        RefreshToken: myHashR,
+        "Content-Type": "application/json",
+      };
+      const response = axiosClient.get(
+        `${BASE_URL_API}/${ORDERS.TOP_PRODUCT}?sort=${sort}&year=${year}&month=${month}&limit=${limit}`,
+        { headers }
+      );
+      return response;
+    }
+  } catch (error) {
+    logError(error);
+  }
+};
+//top order for shop
+export const handleGetTopOrder = async (
+  sort: string = "-totalPriceAll",
+  year: number = new Date().getFullYear(),
+) => {
+  try {
+    // ?sort=-totalQuantity&year=2023&month=12&limit=100
+    let tokenA = LocalStorageService.getTokenA(ADMIN_TOKENA);
+    let tokenR = LocalStorageService.getTokenR(ADMIN_TOKENR);
+    if (tokenA && tokenR) {
+      let myHashA = decryptData(tokenA);
+      let myHashR = decryptData(tokenR);
+      // let a = new URLSearchParams
+      console.log(myHashA);
+      console.log(myHashR);
+      
+      const headers = {
+        Authorization: myHashA,
+        RefreshToken: myHashR,
+        "Content-Type": "application/json",
+      };
+      const response = axiosClient.get(
+        `${BASE_URL_API}/${ORDERS.TOP_PRODUCT}?sort=${sort}&year=${year}`,
+        { headers }
+      );
+      return response;
+    }
+  } catch (error) {
+    logError(error);
   }
 };

@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import styles from "./products.module.scss";
-import {  handleQueryProduct } from "@/api/product";
-import { Modal, Pagination } from "@mui/material";
+import { handleQueryProduct } from "@/api/product";
+import { CircularProgress, Modal, Pagination } from "@mui/material";
 import { calculateTotalPages } from "@/utils/pagination-utils";
 import { columns, formColumns } from "./form";
 import DataTable from "@/components/dataTable/DataTable";
-import Add from "./AddProduct";
-import ProductDetail from "./product-detail";
+import Add from "./components/AddProduct";
+import ProductDetail from "./components/product-detail";
 
 import {
   SET_TOTAL_PRODUCT,
@@ -23,13 +23,14 @@ const Products = () => {
   const [openDetail, setOpenDetail] = useState(false);
   const [listProduct, setListProduct] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(false)
   const [selectedRowData, setSelectedRowData] = useState({});
   const totalProductFromStorage = localStorage.getItem("totalProduct");
   const handleFetchApi = async (pageNumber?: number) => {
     const response = await handleQueryProduct(pageNumber);
     if (response?.status == 200) {
       // console.log(response.data.data);
-      
+
       const modifiedData = response.data.data.map(
         (item: any, index: number) => ({
           ...item,
@@ -39,21 +40,12 @@ const Products = () => {
         })
       );
       setListProduct(modifiedData);
-      // dispatch(actionNextPaginationProducts(modifiedData));
-      // const responseNextPage = await handleQueryProduct(currentPage + 1);
-      // if (responseNextPage?.status == 200) {
-      //   const modifiedNextData = responseNextPage.data.data.map((item: any, index: number) => ({
-      //     ...item,
-      //     id: index + 1,
-      //     product_price: `$${item.product_price}`,
-      //     createdAt: `${modifiedString(item)}`,
-      //   }));
-
-      //   dispatch(actionNextPaginationProducts(modifiedNextData));
-      // }
+      
     }
+    setLoading(false)
   };
   useEffect(() => {
+    setLoading(true)
     handleFetchApi(currentPage);
   }, [actionUser]);
 
@@ -84,40 +76,54 @@ const Products = () => {
           Add New Product
         </button>
       </div>
-      <DataTable
-        slug="products"
-        columns={columns}
-        rows={listProduct}
-        isUserPage={true}
-        onRowClick={(rowData) => handleClickRow(rowData.row)}
-      />
-      <div className={styles.pagination}>
-        <Pagination
-          count={calculateTotalPages(Number(totalProductFromStorage))}
-          page={currentPage}
-          onChange={(_event, page) => handlePageChange(page)}
-          variant="outlined"
-          shape="rounded"
-          color="primary"
+      {loading ? (
+        <div className={styles.loadingContainer}>
+          <CircularProgress color="primary" size={50} />
+          <p>Loading...</p>
+        </div>
+      ) : (<>
+        <DataTable
+          slug="products"
+          columns={columns}
+          rows={listProduct}
+          isUserPage={true}
+          
+          onRowClick={(rowData) => handleClickRow(rowData.row)}
         />
-      </div>
+        <div className={styles.pagination}>
+          <Pagination
+            count={calculateTotalPages(Number(totalProductFromStorage))}
+            page={currentPage}
+            onChange={(_event, page) => handlePageChange(page)}
+            variant="outlined"
+            shape="rounded"
+            color="primary"
+          />
+        </div>
+      </>)
+      }
 
       {open && <Add slug="Product" columns={formColumns} setOpen={setOpen} />}
-      {openDetail && (
-        <Modal
-          open={openDetail}
-          onClose={() => setOpenDetail(false)}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <ProductDetail
-            selectedRowData={selectedRowData}
-            setOpen={setOpenDetail}
-            userData={selectedRowData}
-          />
-        </Modal>
-      )}
-    </div>
+      {
+        openDetail && (
+          <Modal
+            open={openDetail}
+            onClose={() => setOpenDetail(false)}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <ProductDetail
+          isDraft={false}
+          isUserProduct={true}
+
+              selectedRowData={selectedRowData}
+              setOpen={setOpenDetail}
+              userData={selectedRowData}
+            />
+          </Modal>
+        )
+      }
+    </div >
   );
 };
 

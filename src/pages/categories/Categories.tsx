@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import styles from "./category.module.scss";
 import DataTable from "@/components/dataTable/DataTable";
-import {  Pagination } from "@mui/material";
+import { CircularProgress, Pagination } from "@mui/material";
 import { categoryColumns } from "./model-category";
 import AddCategory from "./components/add";
-import {  handleQueryCategory } from "@/api/category";
+import { handleQueryCategory } from "@/api/category";
 import { useDispatch, useSelector } from "react-redux";
 import {
   SET_TOTAL_CATEGORY,
@@ -22,6 +22,7 @@ export default function Categories() {
   const [pageNumber, setPageNumber] = useState<number>();
   const [rowDataCategory, setRowDataCategory] = useState<CategoryModel>();
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(false)
   const actionUser = useSelector((state: any) => state.user.isAddNewCategory);
   const dispatch = useDispatch();
 
@@ -40,6 +41,7 @@ export default function Categories() {
       setPageNumber(response.data.options.maxPage);
       setListProduct(modifiedData);
     }
+    setLoading(false)
   };
   const handlePageChange = async (page: number) => {
     setCurrentPage(page);
@@ -61,6 +63,7 @@ export default function Categories() {
   //   }
   // };
   useEffect(() => {
+    setLoading(true)
     handleFetchApi(currentPage);
   }, [actionUser]);
 
@@ -78,34 +81,45 @@ export default function Categories() {
         </button>
       </div>
       <ToastContainer />
-      <DataTable
-        slug="products"
-        columns={categoryColumns}
-        rows={listProduct}
-        isUserPage={false}
-        onActionUpdateClick={() => {
-          dispatch(actionSetTotalUsers(SET_TOTAL_CATEGORY, false));
-          setIsUpdated(true);
-          setOpen(true);
-        }}
-        // onActionDeleteClick={() => {
-        //   setModalDelete(true);
-        //   dispatch(actionSetTotalUsers(SET_TOTAL_CATEGORY, false));
-        // }}
-        onRowClick={(rowData) => {
-          setRowDataCategory(rowData.row);
-        }}
-      />
-      <div className={styles.pagination}>
-        <Pagination
-          count={pageNumber}
-          page={currentPage}
-          onChange={(_event, page) => handlePageChange(page)}
-          variant="outlined"
-          shape="rounded"
-          color="primary"
-        />
-      </div>
+      {loading ? (
+        <div className={styles.loadingContainer}>
+          <CircularProgress color="primary" size={50} />
+          <p>Loading...</p>
+        </div>
+      ) : (
+        <>
+          <DataTable
+            slug="products"
+            columns={categoryColumns}
+            rows={listProduct}
+            isUserPage={false}
+            onActionUpdateClick={
+              () => {
+                dispatch(actionSetTotalUsers(SET_TOTAL_CATEGORY, false));
+                setIsUpdated(true);
+                setOpen(true);
+              }}
+            // onActionDeleteClick={() => {
+            //   setModalDelete(true);
+            //   dispatch(actionSetTotalUsers(SET_TOTAL_CATEGORY, false));
+            // }}
+            onRowClick={(rowData) => {
+              setRowDataCategory(rowData.row);
+            }}
+          />
+          <div className={styles.pagination}>
+            <Pagination
+              count={pageNumber}
+              page={currentPage}
+              onChange={(_event, page) => handlePageChange(page)}
+              variant="outlined"
+              shape="rounded"
+              color="primary"
+            />
+          </div>
+        </>
+      )
+      }
       {/* {modalDelete && (
         <Modal
           open={modalDelete}
@@ -167,15 +181,17 @@ export default function Categories() {
         </Modal>
       )} */}
       {/* modal add */}
-      {open && (
-        <AddCategory
-          selectedRowData={rowDataCategory}
-          isUpdated={isUpdated}
-          setIsUpdated={setIsUpdated}
-          slug="Category"
-          setOpen={setOpen}
-        />
-      )}
-    </div>
+      {
+        open && (
+          <AddCategory
+            selectedRowData={rowDataCategory}
+            isUpdated={isUpdated}
+            setIsUpdated={setIsUpdated}
+            slug="Category"
+            setOpen={setOpen}
+          />
+        )
+      }
+    </div >
   );
 }

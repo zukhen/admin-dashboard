@@ -6,9 +6,11 @@ import { useNavigate } from "react-router-dom";
 import { ADMIN_DATA } from "@/service/constant";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  CLEAR_TOTAL_USERS,
   SET_EXPANDED_MENU,
   actionSetTotalUsers,
 } from "@/redux/action/user-action";
+import { CLEAR_NEW_ORDER, receiveNewOrder } from "@/redux/action/order-action";
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -34,6 +36,9 @@ const Navbar = () => {
   const handleLogout = () => {
     LocalStorageService.removeAll();
     sessionStorage.clear()
+    dispatch(actionSetTotalUsers(CLEAR_TOTAL_USERS));
+    dispatch(receiveNewOrder(CLEAR_NEW_ORDER,undefined));
+
     navigate("/", { replace: true });
   };
   const handleSetExpanded = () => {

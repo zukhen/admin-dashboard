@@ -55,6 +55,8 @@ const Menu = () => {
                   className={styles.listItemTitle}
                   style={{
                     display: isExpandedMenu ? "none" : "flex",
+                    fontSize: listItem.title =="Published Products" || listItem.title == "Draft Products" ?'13px':'',
+                    whiteSpace: 'nowrap',
                   }}
                   title="Expanded"
                 >

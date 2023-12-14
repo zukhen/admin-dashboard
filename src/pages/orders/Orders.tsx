@@ -51,7 +51,7 @@ const Orders = ({ status }: Props) => {
                 .toISOString()
                 .replace("T", " | ")
                 .replace(/\.\d{3}Z/, ""),
-              order_checkout: item.order_checkout.totalPrice,
+              order_checkout: item.order_products[0].priceApplyDiscount,
               address: `${item.order_shipping.street}, ${item.order_shipping.city}`,
             };
           }
@@ -122,7 +122,7 @@ const Orders = ({ status }: Props) => {
         </div>
       ) : (
         <>
-          {listOrder.length === 0 ? (
+          {listOrder.length == 0 ? (
             <p>No orders found.</p>
           ) : (
             <>

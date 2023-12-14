@@ -76,5 +76,11 @@ const columns2: GridColDef[] = [
         headerName: "Password",
         width: 200,
     },
+    {
+        field: "address",
+        type: "address",
+        headerName: "Address",
+        width: 200,
+    },
 ];
 export { columns, columns2 }

@@ -76,8 +76,6 @@ export const handleUpdateProduct = async (
     if (tokenA && tokenR) {
       let myHashA = decryptData(tokenA);
       let myHashR = decryptData(tokenR);
-      console.log(myHashA);
-      console.log(myHashR);
 
       const headers = {
         authorization: myHashA,
@@ -103,8 +101,6 @@ export const handleUpdateProduct = async (
           availability: "2023-12-04T10:00:00.000Z",
         },
       };
-      console.log("FORM DATA");
-      console.log(data);
 
       const response = await axiosClient.patch(
         `${BASE_URL_API}/${PRODUCT.POST}/${id}`,
@@ -124,17 +120,102 @@ export const handleHideProduct = async (id: string) => {
     if (tokenA && tokenR) {
       let myHashA = decryptData(tokenA);
       let myHashR = decryptData(tokenR);
+      
+      const headers = {
+        authorization: myHashA,
+        "refresh-token": myHashR,
+        "Content-Type": "application/json",
+
+      };
+      // console.log(data);
+      // console.log(headers);
+      //put{uri,body,config}
+      const response = await axiosClient.put(
+        `${BASE_URL_API}/${PRODUCT.HIDE}/${id}`,{},
+        { headers }
+      );
+      console.log('response',response);
+      
+      return response;
+    }
+  } catch (error) {
+    logError(error);
+  }
+};
+export const handleShowProduct = async (id: string) => {
+  try {
+    let tokenA = LocalStorageService.getTokenA(ADMIN_TOKENA);
+    let tokenR = LocalStorageService.getTokenR(ADMIN_TOKENR);
+    if (tokenA && tokenR) {
+      let myHashA = decryptData(tokenA);
+      let myHashR = decryptData(tokenR);
 
       const headers = {
         authorization: myHashA,
         "refresh-token": myHashR,
         "Content-Type": "application/json",
+
       };
+      // console.log(data);
+      // console.log(headers);
       const response = await axiosClient.put(
-        `${BASE_URL_API}/${PRODUCT.HIDE}/${id}`,
-        {},
+        `${BASE_URL_API}/${PRODUCT.SHOW}/${id}`,{},
         { headers }
       );
+      return response;
+    }
+  } catch (error) {
+    logError(error);
+  }
+};
+export const handleGetAllProduct = async () => {
+  try {
+  const response = await axiosClient.get(`${BASE_URL_API}/${PRODUCT.POST}?limit=70&page=1`)
+  return response
+    
+  } catch (error) {
+    logError(error)
+  }
+}
+
+export const handleQueryDraftProducts = async () => {
+
+  try {
+    let tokenA = LocalStorageService.getTokenA(ADMIN_TOKENA);
+    let tokenR = LocalStorageService.getTokenR(ADMIN_TOKENR);
+    if (tokenA && tokenR) {
+      let myHashA = decryptData(tokenA);
+      let myHashR = decryptData(tokenR);
+
+      const headers = {
+        authorization: myHashA,
+        "refresh-token": myHashR,
+      };
+      const response = await axiosClient.get(`${BASE_URL_API}/${PRODUCT.DRAFT}`,
+      { headers }
+      )
+      return response;
+    }
+  } catch (error) {
+    logError(error);
+  }
+};
+export const handleQueryPublishedProducts = async () => {
+
+  try {
+    let tokenA = LocalStorageService.getTokenA(ADMIN_TOKENA);
+    let tokenR = LocalStorageService.getTokenR(ADMIN_TOKENR);
+    if (tokenA && tokenR) {
+      let myHashA = decryptData(tokenA);
+      let myHashR = decryptData(tokenR);
+
+      const headers = {
+        authorization: myHashA,
+        "refresh-token": myHashR,
+      };
+      const response = await axiosClient.get(`${BASE_URL_API}/${PRODUCT.PUBLISHED}`,
+      { headers }
+      )
       return response;
     }
   } catch (error) {

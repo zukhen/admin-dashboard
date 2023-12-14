@@ -2,7 +2,7 @@ import { GridColDef } from "@mui/x-data-grid";
 import styles from "./users.module.scss";
 import { useEffect, useState } from "react";
 import { handleQueryUser } from "@/api/user";
-import { Pagination } from "@mui/material";
+import { CircularProgress, Pagination } from "@mui/material";
 import { splitTotalString } from "@/utils/modifield-string";
 import { calculateTotalPages } from "@/utils/pagination-utils";
 import DataTable from "@/components/dataTable/DataTable";
@@ -55,10 +55,11 @@ const columns: GridColDef[] = [
 
 const Users = () => {
   const totalUserFromStorage = localStorage.getItem("totalUser") ?? "0";
-  const renderUser = useSelector((state:any)=>state.user.isAddNewUser)
+  const renderUser = useSelector((state: any) => state.user.isAddNewUser)
   const [open, setOpen] = useState(false);
   const [listUser, setListUser] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(false)
 
   const handleFetchApi = async (pageNumber?: number) => {
     const response = await handleQueryUser(pageNumber);
@@ -76,8 +77,10 @@ const Users = () => {
       }));
       setListUser(modifiedData);
     }
+    setLoading(false)
   };
   useEffect(() => {
+    setLoading(true)
     handleFetchApi();
   }, [renderUser]);
   const handlePageChange = async (page: number) => {
@@ -91,28 +94,34 @@ const Users = () => {
         <h1>Users</h1>
         {/* <button onClick={() => setOpen(true)}>Add New User</button> */}
       </div>
-      <DataTable
-        slug="users"
-        columns={columns}
-        rows={listUser}
-        onRowClick={() => {}}
-        isUserPage={true}
-      />
-      <div className={styles.pagination}>
-        <Pagination
-          count={
-            calculateTotalPages(
-              Number(splitTotalString(totalUserFromStorage.toString())[1])
-            )
-          }
-          page={currentPage}
-          onChange={(_event, page) => handlePageChange(page)}
-          variant="outlined"
-          shape="rounded"
-          color="primary"
+      {loading ? (
+        <div className={styles.loadingContainer}>
+          <CircularProgress color="primary" size={50} />
+          <p>Loading...</p>
+        </div>
+      ) : <>
+        <DataTable
+          slug="users"
+          columns={columns}
+          rows={listUser}
+          onRowClick={() => { }}
+          isUserPage={true}
         />
-      </div>
-
+        <div className={styles.pagination}>
+          <Pagination
+            count={
+              calculateTotalPages(
+                Number(splitTotalString(totalUserFromStorage.toString())[1])
+              )
+            }
+            page={currentPage}
+            onChange={(_event, page) => handlePageChange(page)}
+            variant="outlined"
+            shape="rounded"
+            color="primary"
+          />
+        </div>
+      </>}
       {open && <Add slug="user" columns={columns} setOpen={setOpen} />}
     </div>
   );

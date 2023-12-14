@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import styles from "./orders.module.scss";
 import {
+  convertVNDCurrencyformatting,
+
   modifyFirstCharacterString,
   truncateName,
 } from "@/utils/modifield-string";
@@ -37,8 +39,9 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
             orderStatus.confirmed
           );
           if (responseC?.status === 200) {
-            toast.success(responseC?.data.message,{
-              autoClose: 1000});
+            toast.success(responseC?.data.message, {
+              autoClose: 1000
+            });
 
             const delay = (ms: any) =>
               new Promise((resolve) => setTimeout(resolve, ms));
@@ -61,9 +64,10 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
             orderStatus.shipping
           );
           if (responsS?.status === 200) {
-            toast.success(responsS.data.message,{
-              autoClose: 1000});
-              
+            toast.success(responsS.data.message, {
+              autoClose: 1000
+            });
+
             const delay = (ms: any) =>
               new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -85,6 +89,8 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
   const onChange = (e: any) => {
     setSelectedValue(e.target.value);
   };
+  console.log(selectedRowData);
+
   return (
     <div className={styles.register}>
       <div className={styles.containerRegister}>
@@ -137,7 +143,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
                                     {itemProduct.product_name}
                                   </h2>
                                   <h3 className={styles.text}>
-                                    ${itemProduct.price}
+                                    {convertVNDCurrencyformatting(itemProduct.price)}
                                   </h3>
                                   <h3 className={styles.text}>
                                     Quantity: {itemProduct.quantity}
@@ -147,7 +153,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
                               <div className={styles.titleItemProducts}>
                                 <h2 className={styles.text}>Total</h2>
                                 <h3 className={styles.text}>
-                                  ${itemProduct.quantity * itemProduct.price}
+                                  {convertVNDCurrencyformatting(itemProduct.quantity * itemProduct.price)}
                                 </h3>
                               </div>
                             </div>
@@ -160,6 +166,10 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
               </div>
 
               {/* INFOR CUSTOMER */}
+              <div className={styles.rowContent}>
+                <h3 className={styles.text}>Discount: </h3>
+                <p className={styles.text}>{selectedRowData?.order_products[0].priceRow - selectedRowData?.order_products[0].priceApplyDiscount}₫</p>
+              </div>
               <div className={styles.rowContent}>
                 <h3 className={styles.text}>Customer name: </h3>
                 <p className={styles.text}>{userData?.name}</p>
@@ -181,7 +191,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
                 </p>
               </div>
               {selectedRowData?.order_status.toString() == "canceled" ||
-              selectedRowData?.order_status.toString() == "shipping" ? (
+                selectedRowData?.order_status.toString() == "shipping" ? (
                 <div>
                   <div className={styles.rowContent}>
                     <h3>Status: </h3>
@@ -190,12 +200,12 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
                         fontWeight: "bold",
                         color:
                           selectedRowData?.order_status.toString() ===
-                          "canceled"
+                            "canceled"
                             ? "red"
                             : selectedRowData?.order_status.toString() ===
                               "confirmed"
-                            ? "green"
-                            : "#2a3447",
+                              ? "green"
+                              : "#2a3447",
                       }}
                     >
                       {selectedRowData?.order_status.toString()}
@@ -266,7 +276,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
               )}
               <div className={styles.rowContentTotalPrice}>
                 <h1>Total Price: </h1>
-                <h1 className="">${selectedRowData?.order_checkout}</h1>
+                <h1 className="">{convertVNDCurrencyformatting(selectedRowData?.order_products[0].priceApplyDiscount)}</h1>
               </div>
               {prevStatus !== selectedValue &&
                 (isLoading ? (
@@ -294,8 +304,8 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
           </div>
         </div>
       </div>
-      <ToastContainer 
- />
+      <ToastContainer
+      />
     </div>
   );
 };

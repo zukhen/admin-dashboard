@@ -2,9 +2,9 @@ import "@/styles/global.scss";
 import styles from "./login.module.scss";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CircularProgress, Modal } from "@mui/material";
+import { CircularProgress} from "@mui/material";
 import { validatePassword, validateUsername } from "@/utils/auth-utils";
-import Register from "@/pages/register/register";
+// import Register from "@/pages/register/register";
 import { LocalStorageService } from "@/service/local-storage-service";
 import {
   ADMIN_DATA,
@@ -29,7 +29,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [errorUsername, setErrorUsername] = useState(false);
   const [errorPassword, setErrorPassword] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  // const [showModal, setShowModal] = useState(false);
   const [submitButtonDisabled, setSubmitButtonDisabled] = useState(false);
 
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -129,9 +129,9 @@ const Login = () => {
     }
   };
 
-  const handleRedirect = () => {
-    setShowModal(!showModal);
-  };
+  // const handleRedirect = () => {
+  //   setShowModal(!showModal);
+  // };
 
   return (
     <div className={styles.main}>
@@ -187,7 +187,7 @@ const Login = () => {
           <img src={'/phone.png'} alt="image" className={styles.image} />
         </div>
 
-        {showModal && (
+        {/* {showModal && (
           <Modal
             open={showModal}
             onClose={handleRedirect}
@@ -196,7 +196,7 @@ const Login = () => {
           >
             <Register onClose={handleRedirect} />
           </Modal>
-        )}
+        )} */}
       </div>
       <ToastContainer />
     </div>

@@ -14,7 +14,7 @@ export const handleQueryCategory = async (
     if (tokenA && tokenR) {
       let myHashA = decryptData(tokenA);
       let myHashR = decryptData(tokenR);
-
+      
       const headers = {
         Authorization: myHashA,
         RefreshToken: myHashR,
@@ -44,7 +44,6 @@ export const handleAddCategory = async (category: object) => {
         RefreshToken: myHashR,
         "Content-Type": "application/json",
       };
-      console.log(category);
       
       const response = await axiosClient.post(
         `${BASE_URL_API}/${CATEGORIES.QUERY}`,category,

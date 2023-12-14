@@ -12,6 +12,19 @@ a {
   color: inherit;
 }
 
+body {
+  margin: 0;
+  height: 100vh; /* Set body height to 100% of the viewport */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+html, #root {
+  height: 100%;
+}
+
 .main {
   font-family: "Inter", sans-serif;
   background-color: $main-bg;
@@ -22,7 +35,7 @@ a {
   display: flex;
   min-height: 100vh;
 }
-//global.scss
+
 .menuContainer {
   padding: 5px 20px;
   border-right: 2px solid $soft-bg;
@@ -34,3 +47,16 @@ a {
   padding: 5px 20px;
   width: 100%;
 }
+button {
+      background-color: $main-bg;
+      color: $main-color;
+      border: none;
+      border-radius: 5px;
+      padding: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+  
+      &:hover {
+          background-color: darken($main-bg, 10%); // Darken the background on hover
+      }
+  }

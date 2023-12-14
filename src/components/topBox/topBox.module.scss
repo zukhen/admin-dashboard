@@ -36,8 +36,8 @@
 
         .userTexts {
           display: flex;
+          flex: 1;
           flex-direction: column;
-          gap: 5px;
 
           .username {
             font-size: 14px;
@@ -60,5 +60,19 @@
         font-weight: 500;
       }
     }
+  }
+}
+.shimmerTitle{
+  width: 180px;
+  
+
+  @include lg{
+    width: 140px;
+  }
+}
+.shimmerAmount{
+  width: 40px;
+  @include lg{
+    width: 30px;
   }
 }

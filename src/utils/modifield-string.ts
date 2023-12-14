@@ -16,8 +16,13 @@ export const truncateName = (name: String) => {
 export const modifyFirstCharacterString = (str: string): string => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
+// // international symbol is "VND".
+// export const convertVNDCurrencyformatting = (str:any):string=>{
+//  return str = str.toLocaleString('it-IT', {style : 'currency', currency : '₫'});
 
-export const convertVNDCurrencyformatting = (str:any):string=>{
- return str = str.toLocaleString('it-IT', {style : 'currency', currency : 'VND'});
+// }
+//The national symbol is "d", the
 
+export const convertVNDCurrencyformatting = (str: any): string => {
+  return str.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }).replace('VND', '₫');
 }

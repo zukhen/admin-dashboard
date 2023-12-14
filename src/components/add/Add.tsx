@@ -17,6 +17,7 @@ import {
 } from "@/redux/action/user-action";
 import { CircularProgress } from "@mui/material";
 import { splitTotalString } from "@/utils/modifield-string";
+import { handleAddAddress } from "@/api/address";
 
 type Props = {
   slug: string;
@@ -29,6 +30,7 @@ type FormData = {
   msisdn: string;
   email: string;
   password: string;
+  address: string;
 };
 
 const Add = (props: Props) => {
@@ -41,6 +43,7 @@ const Add = (props: Props) => {
     msisdn: "",
     email: "",
     password: "",
+    address: "",
   });
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -61,18 +64,28 @@ const Add = (props: Props) => {
       !validateFullName(formData.name) &&
       !validateMobileNumber(formData.msisdn) &&
       !validateUsername(formData.email) &&
+      !validateFullName(formData.address) &&
       formData.password.length > 8
     ) {
       try {
         setIsLoading(true);
         const res = await addNewShop(formData);
         if (res?.data.status == 201) {
-          toast.success(res.data.message);
-          dispatch(actionSetTotalUsers(SET_TOTAL_USERS, true));
-          //xoá cắt chim
-          let calc = Number(splitTotalString(totalUserToShow.toString())[0])+1;
+          console.log(res.data);
+          let shopId = res.data.data.shop._id
+          const resAddress = await handleAddAddress(shopId,formData.address);
+          if (resAddress?.status == 200) {
+            toast.success(res.data.message);
+            dispatch(actionSetTotalUsers(SET_TOTAL_USERS, true));
+            //xoá cắt chim
+            let calc =
+              Number(splitTotalString(totalUserToShow.toString())[0]) + 1;
 
-          localStorage.setItem("totalUser", calc.toString());
+            localStorage.setItem("totalUser", calc.toString());
+          }else{
+            toast.error("Error when add Address");
+
+          }
           // window.location.reload();
         } else {
           toast.error("Error unable to add Shop");
@@ -126,6 +139,7 @@ const Add = (props: Props) => {
                   type={column.type}
                   placeholder={column.field}
                   name={column.field}
+                  style={{ width: column.field == "address" ? "500px" : "" }}
                   onChange={handleInputChange}
                 />
               </div>

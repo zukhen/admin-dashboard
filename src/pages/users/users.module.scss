@@ -1,19 +1,25 @@
-.users{
+.users {
 
-  .info{
+  .info {
     display: flex;
     align-items: center;
     gap: 20px;
     margin-bottom: 20px;
 
-    button{
+    button {
       padding: 5px;
       cursor: pointer;
     }
   }
 }
 
-
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 20vh;
+}
 
 .pagination {
   display: flex;

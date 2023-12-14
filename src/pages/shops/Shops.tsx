@@ -1,6 +1,6 @@
 import DataTable from "@/components/dataTable/DataTable";
 import { useEffect, useState } from "react";
-import { Pagination } from "@mui/material";
+import { CircularProgress, Pagination } from "@mui/material";
 import { calculateTotalPages } from "@/utils/pagination-utils";
 import { splitTotalString } from "@/utils/modifield-string";
 import { handleQueryUser } from "@/api/user";
@@ -20,6 +20,7 @@ export default function Shops() {
   const actionUser = useSelector((state: any) => state.user.isAddNewUser);
   const [open, setOpen] = useState(false);
   const [listUser, setListUser] = useState([]);
+  const [loading, setLoading] = useState(false)
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -27,12 +28,12 @@ export default function Shops() {
     const response = await handleQueryUser(pageNumber, true);
     if (response?.status == 200) {
       console.log(response.data.data);
-      
+
       const modifiedData = response.data.data.map(
         (item: any, index: number) => ({
           ...item,
           id: index + 1,
-          product_price: `$${item.product_price}`,
+          product_price: `${item.product_price}₫`,
           createdAt: convertToVietnamTime(item.createdAt),
 
         })
@@ -40,8 +41,10 @@ export default function Shops() {
 
       setListUser(modifiedData);
     }
+    setLoading(false)
   };
   useEffect(() => {
+    setLoading(true)
     handleFetchApi(currentPage);
   }, [actionUser]);
 
@@ -62,35 +65,45 @@ export default function Shops() {
           Add New Shop
         </button>
       </div>
-      <DataTable
-        slug="users"
-        columns={columns}
-        rows={listUser}
-        onRowClick={(rowData) => console.log(rowData)
-        }
-        isUserPage={true}
-      />
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          marginTop: -2,
-          paddingTop: "10px",
-          backgroundColor: "white",
-        }}
-      >
-        <Pagination
-          count={calculateTotalPages(
-            Number(splitTotalString(totalUserToShow.toString())[0])
-          )}
-          page={currentPage}
-          onChange={(_event, page) => handlePageChange(page)}
-          variant="outlined"
-          shape="rounded"
-          color="primary"
-        />
-      </div>
 
+      {loading ?
+        (
+          <div className={styles.loadingContainer}>
+            <CircularProgress color="primary" size={50} />
+            <p>Loading...</p>
+          </div>
+        ) : (
+          <>
+            <DataTable
+              slug="users"
+              columns={columns}
+              rows={listUser}
+              onRowClick={()=>{}
+              }
+              isUserPage={true}
+            />
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginTop: -2,
+                paddingTop: "10px",
+                backgroundColor: "white",
+              }}
+            >
+              <Pagination
+                count={calculateTotalPages(
+                  Number(splitTotalString(totalUserToShow.toString())[0])
+                )}
+                page={currentPage}
+                onChange={(_event, page) => handlePageChange(page)}
+                variant="outlined"
+                shape="rounded"
+                color="primary"
+              />
+            </div>
+          </>
+        )}
       {open && <Add slug="Shop" columns={columns2} setOpen={setOpen} />}
     </div>
   );
