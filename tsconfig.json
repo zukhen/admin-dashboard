@@ -3,6 +3,8 @@
     "paths": {
       "@/*": ["./src/*"],
       "@assets/*": ["./public/*"],
+      "typeRoots": ["node_modules/@types", "./src/types"]
+
     },
     "baseUrl": ".",
     "target": "ES2020",
