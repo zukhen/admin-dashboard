@@ -1,8 +1,8 @@
 //all the url config in here
-export const BASE_URL_API = "https://delifood.io.vn/api/v1";
+export const BASE_URL_API = "";
 // export const BASE_URL_API = "http://localhost:3056/api/v1";
 export const x_api_key =
-  "a5c8bd1fc3e63b13fd82140eb433e09ef950abd8b11d0529c35e92db93f8c4ead881ccea879d15f92508db3301d97f3dcb5f4629a70fcc825c90283073bfb163";
+  "";
 
 // product
 export const PRODUCT = {
